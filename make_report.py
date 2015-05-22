@@ -7,7 +7,7 @@ Following charts are generated:
     4. Distribution By Milestone
     5. Distribution by Fixed-by
     6. # of times a file was modified
-    7. # of lines modified per file 
+    7. # of lines modified per file
 
 Pre-requisites: bugseeker.py has been run and Bug Report(.xls) spreadsheet is generated
 Dependent Packages: xlrd (pip install), cairoplot (bzr branch lp:cairoplot)
@@ -29,7 +29,6 @@ import re
 import xlrd
 import cairoplot
 import markup
-import sys
 
 REPORTS_ROOT='/var/lib/jenkins/LPReports/'
 
@@ -37,7 +36,7 @@ def get_latest_reports_dir():
     """Search the Reports folder for the latest .xls report and return the latest folder and filepath"""
     pipe = subprocess.Popen(["/bin/ls", "-t", REPORTS_ROOT], stdout=subprocess.PIPE)
     output,err = pipe.communicate()
-    folder = output.split()[0]    
+    folder = output.split()[0]
     latest_dir = os.path.join(REPORTS_ROOT,folder)
     pipe2 = subprocess.Popen(["/bin/ls", "-t", latest_dir], stdout=subprocess.PIPE)
     filepath,err = pipe2.communicate()
@@ -76,7 +75,7 @@ def pop3(column):
     """Pop out the first 3 rows from the column"""
     for i in range(3):
 	column.pop(0)
-	
+
 for each_column in (owners, statuses, imps, fixers, miles, files_mod, lines_list):
     pop3(each_column)
 
@@ -142,7 +141,6 @@ sorted_files_to_lines = sorted(files_to_lines, key=lambda x: x[1], reverse=True)
 def plot_chart(param, img_file, width=1040, height=480):
     """Get the parameter list and plot Vertical bar chart"""
     data = [[val[1]] for val in param]
-    labels =  [val[0] for val in param]
     chart = cairoplot.VerticalBarPlot(img_file, data, width, height, background=None, border=20, grid=True, x_labels=[val[0] for val in param],three_dimension=False, display_values=True, series_colors="custom")
     chart.render()
     chart.commit()
@@ -157,7 +155,7 @@ def make_files_mod_table(reports_dir, sorted_files_mod_count):
     """Using the sorted list of files modified, create the HTML table"""
     page = markup.page()
     count = 1
-    page.init(title="Vertex - Launchpad Bug report")
+    page.init(title="Launchpad Bug report")
     page.table(border="2", cellspacing="0", cellpadding="4", width="50%", style="font-family:Verdana, sans-serif; text-align:left")
     page.th("S/N")
     page.th("Modified File")
@@ -178,7 +176,7 @@ def make_lines_mod_table(reports_dir, sorted_files_to_lines):
     """Using the sorted list of lines modified per file, create the HTML table"""
     page = markup.page()
     count = 1
-    page.init(title="Vertex - Launchpad Bug report")
+    page.init(title="Launchpad Bug report")
     page.table(border="2", cellspacing="0", cellpadding="4", width="50%", style="font-family:Verdana, sans-serif; text-align:left")
     page.th("S/N")
     page.th("File Path")
@@ -199,7 +197,7 @@ def make_owners_count_table(reports_dir, sorted_owners_count):
     """Using the sorted list of owners, create the HTML table"""
     page = markup.page()
     count = 1
-    page.init(title="Vertex - Launchpad Bug report")
+    page.init(title="Launchpad Bug report")
     page.table(border="2", cellspacing="0", cellpadding="4", width="50%", style="font-family:Verdana, sans-serif; text-align:left")
     page.th("S/N")
     page.th("Bug Owner")
@@ -220,7 +218,7 @@ def make_fixers_count_table(reports_dir, sorted_fixers_count):
     """Using the sorted list of Fixed-by names, create the HTML table"""
     page = markup.page()
     count = 1
-    page.init(title="Vertex - Launchpad Bug report")
+    page.init(title="Launchpad Bug report")
     page.table(border="2", cellspacing="0", cellpadding="4", width="50%", style="font-family:Verdana, sans-serif; text-align:left")
     page.th("S/N")
     page.th("Bug Fixer/Assignee")
@@ -240,9 +238,9 @@ def make_fixers_count_table(reports_dir, sorted_fixers_count):
 def make_html(reports_dir, filename, total_bugs):
     """Function to create the HTML chart from Launchpad Bug report xls"""
     page = markup.page()
-    page.init(title="Vertex - Launchpad Bug report")
+    page.init(title="Launchpad Bug report")
     page.a(name="top")
-    page.img(src="images/vertex_ntt.png", alt="Vertex-NTT_Logo", align="right")
+    page.img(src="images/logo.png", alt="Company_Logo", align="right")
     page.h1("LAUNCHPAD BUG REPORT - OpenStack NOVA     (%s)"%dt.now().strftime("%d-%m-%Y"), style="font-family:Verdana,sans-serif; font-size:18pt; color:rgb(96,0,0)")
     page.hr()
     page.h1("Total Bug Count: %s"%total_bugs, style="font-family:Verdana,sans-serif; font-size:16pt; color:006699")
